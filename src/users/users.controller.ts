@@ -51,23 +51,23 @@ export class UsersController {
     return this.usersService.update(id, user);
   }
 
-  @HasRoles(JwtRole.CLIENT)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
-  @Put('upload/:id')
-  @UseInterceptors(FileInterceptor('file'))
-  updateWithImage(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }), //tamaño en bytes máximo 10 megas
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-    @Param('id', ParseIntPipe) id: number,
-    @Body() user: UpdateUserDto,
-  ) {
-    return this.usersService.updateWithImage(file, id, user);
-  }
+  // @HasRoles(JwtRole.CLIENT)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @Put('upload/:id')
+  // @UseInterceptors(FileInterceptor('file'))
+  // updateWithImage(
+  //   @UploadedFile(
+  //     new ParseFilePipe({
+  //       validators: [
+  //         new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }), //tamaño en bytes máximo 10 megas
+  //         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+  //       ],
+  //     }),
+  //   )
+  //   file: Express.Multer.File,
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() user: UpdateUserDto,
+  // ) {
+  //   return this.usersService.updateWithImage(file, id, user);
+  // }
 }

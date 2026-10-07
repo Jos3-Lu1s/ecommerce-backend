@@ -58,11 +58,11 @@ export class User {
   @ManyToMany(() => Rol, (rol) => rol.users)
   roles!: Rol[];
 
-  @OneToMany(() => Address, (address) => address.id)
-  address!: Address;
+  // @OneToMany(() => Address, (address) => address.id)
+  // address!: Address;
 
-  @OneToMany(() => Order, (order) => order.id)
-  order!: Order;
+  // @OneToMany(() => Order, (order) => order.id)
+  // order!: Order;
 
   @BeforeInsert()
   async hashPassword() {

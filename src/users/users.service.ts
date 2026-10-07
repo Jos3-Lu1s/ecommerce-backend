@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Rol } from 'src/roles/entities/rol.entity';
-import storage = require('../utils/cloud_storage');
+// import storage = require('../utils/cloud_storage');
 
 @Injectable()
 export class UsersService {
@@ -36,29 +36,29 @@ export class UsersService {
   }
 
   //Actualizar con imagen
-  async updateWithImage(
-    file: Express.Multer.File,
-    id: number,
-    user: UpdateUserDto,
-  ) {
-    const url = await storage(file, file.originalname);
-    console.log('URL: ' + url);
-    console.log('UserURL: ', user);
+  // async updateWithImage(
+  //   file: Express.Multer.File,
+  //   id: number,
+  //   user: UpdateUserDto,
+  // ) {
+  //   const url = await storage(file, file.originalname);
+  //   console.log('URL: ' + url);
+  //   console.log('UserURL: ', user);
 
-    if (url === undefined && url === null) {
-      throw new HttpException(
-        'La imagen no se pudo guardar',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  //   if (url === undefined && url === null) {
+  //     throw new HttpException(
+  //       'La imagen no se pudo guardar',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
 
-    const userFound = await this.usersRepository.findOneBy({ id: id });
+  //   const userFound = await this.usersRepository.findOneBy({ id: id });
 
-    if (!userFound) {
-      throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
-    }
-    user.image = url;
-    const updatedUser = Object.assign(userFound, user);
-    return this.usersRepository.save(updatedUser);
-  }
+  //   if (!userFound) {
+  //     throw new HttpException('Usuario no existe', HttpStatus.NOT_FOUND);
+  //   }
+  //   user.image = url;
+  //   const updatedUser = Object.assign(userFound, user);
+  //   return this.usersRepository.save(updatedUser);
+  // }
 }
