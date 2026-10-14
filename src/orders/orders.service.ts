@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Order } from './entities/order.entity';
+import { OrderHasProducts } from './entities/order_has_products.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(
+    // Inyección del repositorio de la entidad Order (tabla 'orders')
+    @InjectRepository(Order) private ordersRepository: Repository<Order>,
+    // Inyección del repositorio de la entidad OrderHasProducts (tabla intermedia 'order_has_products')
+    @InjectRepository(OrderHasProducts)
+    private ordersHasProductsRepository: Repository<OrderHasProducts>,
+  ) {}
+
+  // Método para crear una orden directamente (sin pasarela de pago como Mercado Pago)
+  async create(order: CreateOrderDto) {
+    // 1. Preparamos la entidad de la orden con los datos principales (id_client, id_address)
+    const newOrder = this.ordersRepository.create(order);
+
+    // 2. Guardamos la orden en la base de datos para generar su ID único
+    const savedOrder = await this.ordersRepository.save(newOrder);
+
+    // 3. Recorremos el listado de productos para registrarlos en la tabla intermedia 'order_has_products'
+    for (const product of order.products) {
+      const ohp = new OrderHasProducts();
+      ohp.id_order = savedOrder.id; // Asociamos el ID de la orden creada
+      ohp.id_product = product.id; // ID del producto comprado
+      ohp.quantity = product.quantity; // Cantidad de unidades
+      await this.ordersHasProductsRepository.save(ohp);
+    }
+
+    // 4. Retornamos la orden registrada
+    return savedOrder;
   }
 
+  // Obtener todas las órdenes con sus relaciones (usuario, dirección y productos)
   findAll() {
-    return `This action returns all orders`;
+    return this.ordersRepository.find({
+      relations: ['user', 'address', 'orderHasProducts.product'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  // Obtener todas las órdenes de un cliente específico
+  findByClient(idClient: number) {
+    return this.ordersRepository.find({
+      relations: ['user', 'address', 'orderHasProducts.product'],
+      where: { id_client: idClient },
+    });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  // Actualizar el estado de la orden a 'DESPACHADO'
+  async updateStatus(id: number) {
+    const orderFound = await this.ordersRepository.findOneBy({ id: id });
+    if (!orderFound) {
+      throw new HttpException('Orden no encontrada', HttpStatus.NOT_FOUND);
+    }
+    const updatedOrder = Object.assign(orderFound, { status: 'DESPACHADO' });
+    return this.ordersRepository.save(updatedOrder);
   }
 }
