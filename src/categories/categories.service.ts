@@ -18,16 +18,19 @@ export class CategoriesService {
   }
 
   async create(file: Express.Multer.File, category: CreateCategoryDto) {
-    const url = await storage(file, file.originalname);
+    if (file) {
+      const url = await storage(file, file.originalname);
 
-    if (url === undefined && url === null) {
-      throw new HttpException(
-        'La imagen no se pudo guardar',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      if (!url) {
+        throw new HttpException(
+          'La imagen no se pudo guardar',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      category.image = url;
     }
 
-    category.image = url;
     const newCategory = this.categoriesRepository.create(category);
     return this.categoriesRepository.save(newCategory);
   }
@@ -50,7 +53,7 @@ export class CategoriesService {
   ) {
     const url = await storage(file, file.originalname);
 
-    if (url === undefined && url === null) {
+    if (!url) {
       throw new HttpException(
         'La imagen no se pudo guardar',
         HttpStatus.INTERNAL_SERVER_ERROR,

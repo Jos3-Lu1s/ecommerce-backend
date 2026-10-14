@@ -1,21 +1,55 @@
 {
   "info": {
     "name": "backend_ecommerce",
-    "description": "Colección de endpoints de la API backend_ecommerce (NestJS).\n\n1. Ejecuta **Auth > Login** (o Register): el token se guarda automáticamente en la variable `token`.\n2. Las peticiones protegidas usan Bearer Token con `{{token}}`.",
+    "description": "Colección de endpoints de la API backend_ecommerce (NestJS).\n\n1. Ejecuta **Auth > Login** (o Register): el token se guarda automáticamente en la variable `token`.\n2. Las peticiones protegidas usan Bearer Token con `{{token}}`.\n3. Varios endpoints (categorías, productos, órdenes) requieren rol **ADMIN**: inicia sesión con un usuario que tenga ese rol.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
     "type": "bearer",
     "bearer": [
-      { "key": "token", "value": "{{token}}", "type": "string" }
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
     ]
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
-    { "key": "token", "value": "", "type": "string" },
-    { "key": "userId", "value": "1", "type": "string" },
-    { "key": "addressId", "value": "1", "type": "string" },
-    { "key": "orderId", "value": "1", "type": "string" }
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "addressId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "1",
+      "type": "string"
+    }
   ],
   "item": [
     {
@@ -41,18 +75,34 @@
             }
           ],
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Juan\",\n  \"lastname\": \"Perez\",\n  \"email\": \"juan.perez@example.com\",\n  \"phone\": \"5512345678\",\n  \"password\": \"123456\",\n  \"rolesIds\": [\"CLIENT\"]\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -76,18 +126,34 @@
             }
           ],
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"juan.perez@example.com\",\n  \"password\": \"123456\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         }
@@ -99,30 +165,50 @@
         {
           "name": "Listar usuarios",
           "request": {
+            "description": "Requiere JWT (cualquier rol).",
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
         {
           "name": "Crear usuario",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Maria\",\n  \"lastname\": \"Lopez\",\n  \"email\": \"maria.lopez@example.com\",\n  \"phone\": \"5587654321\",\n  \"password\": \"123456\",\n  \"image\": \"\",\n  \"notification_token\": \"\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -131,16 +217,30 @@
           "request": {
             "description": "Requiere rol CLIENT.",
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Juan\",\n  \"lastname\": \"Perez Actualizado\",\n  \"phone\": \"5500000000\",\n  \"image\": \"\",\n  \"notification_token\": \"\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         }
@@ -152,18 +252,445 @@
         {
           "name": "Crear rol",
           "request": {
-            "description": "Requiere rol CLIENT.",
+            "description": "Público (los guards están comentados en el controlador).",
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"id\": \"ADMIN\",\n  \"name\": \"Administrador\",\n  \"image\": \"https://example.com/admin.png\",\n  \"route\": \"/admin/home\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/roles",
-              "host": ["{{baseUrl}}"],
-              "path": ["roles"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Listar categorías",
+          "request": {
+            "description": "Requiere rol CLIENT o ADMIN.",
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear categoría",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "  pm.collectionVariables.set('categoryId', json.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "description": "Requiere rol ADMIN. multipart/form-data; `file` es opcional (png/jpg/jpeg, máx. 10 MB).",
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Bebidas",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Refrescos y jugos",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Imagen opcional"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar categoría",
+          "request": {
+            "description": "Requiere rol ADMIN.",
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bebidas\",\n  \"description\": \"Refrescos, jugos y aguas\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar categoría con imagen",
+          "request": {
+            "description": "Requiere rol ADMIN. multipart/form-data; `file` es obligatorio (png/jpg/jpeg, máx. 10 MB).",
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Bebidas",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Refrescos, jugos y aguas",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Imagen obligatoria"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/upload/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "upload",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar categoría",
+          "request": {
+            "description": "Requiere rol ADMIN.",
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "description": "Requiere rol CLIENT o ADMIN.",
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar productos paginados",
+          "request": {
+            "description": "Requiere rol CLIENT o ADMIN. Por defecto page=1, limit=5.",
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/pagination?page=1&limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "pagination"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Productos por categoría",
+          "request": {
+            "description": "Requiere rol CLIENT o ADMIN.",
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/category/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "category",
+                "{{categoryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar productos por nombre",
+          "request": {
+            "description": "Requiere rol CLIENT o ADMIN. Búsqueda parcial (LIKE).",
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/search/coca",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "search",
+                "coca"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.id) {",
+                  "  pm.collectionVariables.set('productId', json.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "description": "Requiere rol ADMIN. multipart/form-data; hasta 2 archivos en `files[]` (opcionales, png/jpg/jpeg, máx. 10 MB).",
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Coca Cola 600ml",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Refresco de cola",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "18.5",
+                  "type": "text"
+                },
+                {
+                  "key": "id_category",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "files[]",
+                  "type": "file",
+                  "src": [],
+                  "description": "Imagen 1 (opcional)"
+                },
+                {
+                  "key": "files[]",
+                  "type": "file",
+                  "src": [],
+                  "description": "Imagen 2 (opcional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "description": "Requiere rol ADMIN.",
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Coca Cola 600ml\",\n  \"description\": \"Refresco de cola sabor original\",\n  \"price\": 19.5,\n  \"id_category\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto con imágenes",
+          "request": {
+            "description": "Requiere rol ADMIN. multipart/form-data; `files[]` es obligatorio y `images_to_update[]` indica qué imagen reemplaza cada archivo (0 = image1, 1 = image2).",
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Coca Cola 600ml",
+                  "type": "text"
+                },
+                {
+                  "key": "images_to_update[]",
+                  "value": "0",
+                  "type": "text",
+                  "description": "Índice de la imagen que reemplaza el primer archivo"
+                },
+                {
+                  "key": "files[]",
+                  "type": "file",
+                  "src": [],
+                  "description": "Nueva imagen"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/upload/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "upload",
+                "{{productId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "description": "Requiere rol ADMIN.",
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "{{productId}}"
+              ]
             }
           }
         }
@@ -171,79 +698,131 @@
     },
     {
       "name": "Address",
+      "description": "Nota: el servicio de direcciones aún es un stub (devuelve texto) y el DTO está vacío. El body de ejemplo sigue la entidad `Address`.",
       "item": [
         {
           "name": "Crear dirección",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"address\": \"Av. Reforma 123\",\n  \"neighborhood\": \"Centro\",\n  \"id_user\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/address",
-              "host": ["{{baseUrl}}"],
-              "path": ["address"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "address"
+              ]
             }
           }
         },
         {
           "name": "Listar direcciones",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/address",
-              "host": ["{{baseUrl}}"],
-              "path": ["address"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "address"
+              ]
             }
           }
         },
         {
           "name": "Obtener dirección",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/address/{{addressId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["address", "{{addressId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "address",
+                "{{addressId}}"
+              ]
             }
           }
         },
         {
           "name": "Actualizar dirección",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"address\": \"Av. Reforma 456\",\n  \"neighborhood\": \"Juárez\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/address/{{addressId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["address", "{{addressId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "address",
+                "{{addressId}}"
+              ]
             }
           }
         },
         {
           "name": "Eliminar dirección",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "DELETE",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/address/{{addressId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["address", "{{addressId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "address",
+                "{{addressId}}"
+              ]
             }
           }
         }
@@ -255,75 +834,84 @@
         {
           "name": "Crear orden",
           "request": {
-            "auth": { "type": "noauth" },
+            "description": "Requiere rol CLIENT o ADMIN.",
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{}",
-              "options": { "raw": { "language": "json" } }
+              "raw": "{\n  \"id_client\": 1,\n  \"id_address\": 1,\n  \"products\": [\n    {\n      \"id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"id\": 2,\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
             }
           }
         },
         {
           "name": "Listar órdenes",
           "request": {
-            "auth": { "type": "noauth" },
+            "description": "Requiere rol ADMIN.",
             "method": "GET",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/orders",
-              "host": ["{{baseUrl}}"],
-              "path": ["orders"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
             }
           }
         },
         {
-          "name": "Obtener orden",
+          "name": "Órdenes por cliente",
           "request": {
-            "auth": { "type": "noauth" },
+            "description": "Requiere rol CLIENT o ADMIN. El parámetro es el id del cliente.",
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/orders/{{orderId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["orders", "{{orderId}}"]
+              "raw": "{{baseUrl}}/orders/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{userId}}"
+              ]
             }
           }
         },
         {
-          "name": "Actualizar orden",
+          "name": "Despachar orden",
           "request": {
-            "auth": { "type": "noauth" },
-            "method": "PATCH",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{}",
-              "options": { "raw": { "language": "json" } }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/orders/{{orderId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["orders", "{{orderId}}"]
-            }
-          }
-        },
-        {
-          "name": "Eliminar orden",
-          "request": {
-            "auth": { "type": "noauth" },
-            "method": "DELETE",
+            "description": "Requiere rol ADMIN. Cambia el estado de la orden a DESPACHADO.",
+            "method": "PUT",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/orders/{{orderId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["orders", "{{orderId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
             }
           }
         }

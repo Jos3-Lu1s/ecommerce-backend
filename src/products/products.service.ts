@@ -74,8 +74,16 @@ export class ProductsService {
       );
     }
 
+    const imagesToUpdate = product.images_to_update;
+    if (!imagesToUpdate || imagesToUpdate.length === 0) {
+      throw new HttpException(
+        'Debe indicar qué imágenes actualizar',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     let counter = 0;
-    let uploadedFiles = Number(product.images_to_update[counter]); // CONTAR CUANTOS ARCHIVOS SE HAN SUBIDO A FIREBASE
+    let uploadedFiles = Number(imagesToUpdate[counter]); // CONTAR CUANTOS ARCHIVOS SE HAN SUBIDO A FIREBASE
 
     const updatedProduct = await this.update(id, product);
 
@@ -93,7 +101,7 @@ export class ProductsService {
 
         await this.update(updatedProduct.id, updatedProduct);
         counter++;
-        uploadedFiles = Number(product.images_to_update[counter]);
+        uploadedFiles = Number(imagesToUpdate[counter]);
       });
     };
     await startForEach();

@@ -27,15 +27,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoriesController {
   constructor(private CategoriesService: CategoriesService) {}
 
-  @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get()
   findAll() {
     return this.CategoriesService.findAll();
   }
 
-  @HasRoles(JwtRole.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @HasRoles(JwtRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Post() // http:localhost:3000/categories -> POST
   @UseInterceptors(FileInterceptor('file'))
   createWithImage(

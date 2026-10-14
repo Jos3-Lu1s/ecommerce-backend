@@ -67,8 +67,8 @@ export class ProductsController {
     return this.productsService.findByName(name);
   }
 
-  @HasRoles(JwtRole.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @HasRoles(JwtRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Post() // http:localhost:3000/categories -> POST
   @UseInterceptors(FilesInterceptor('files[]', 2))
   create(

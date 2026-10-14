@@ -1,28 +1,35 @@
-import { Product } from "src/products/entities/product.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { IsOptional } from 'class-validator';
+import { Product } from 'src/products/entities/product.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'categories' })
 export class Category {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Column({ unique: true })
+  name!: string;
 
-    @Column({ unique: true })
-    name!: string;
-    
-    @Column()
-    description!: string;
-    
-    @Column()
-    image!: string;
+  @Column()
+  description!: string;
 
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    created_at!: Date;
-    
-    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-    updated_at!: Date;
+  @IsOptional()
+  @Column({ nullable: true })
+  image!: string;
 
-    @OneToMany(() => Product, product => product.id)
-    product!: Product
-    
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  created_at!: Date;
+
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  updated_at!: Date;
+
+  @OneToMany(() => Product, (product) => product.id)
+  product!: Product;
 }
