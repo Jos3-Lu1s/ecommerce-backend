@@ -6,10 +6,13 @@ import { JwtRole } from '../auth/jwt/jwt-role';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 
+// Prefijo de ruta base: http://localhost:3000/roles
 @Controller('roles')
 export class RolesController {
   constructor(private rolesService: RolesService) {}
 
+  // POST http://localhost:3000/roles
+  // Crea un rol. Público: los guards están desactivados.
   // @HasRoles(JwtRole.CLIENT)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Post()

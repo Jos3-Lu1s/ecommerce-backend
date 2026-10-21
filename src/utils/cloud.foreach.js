@@ -1,3 +1,4 @@
+// Copia idéntica de cloud_storage.js. Ningún archivo del proyecto la importa; la versión en uso es cloud_storage.js.
 const { Storage } = require('@google-cloud/storage');
 const { format } = require('util');
 const env = require('../config/env');
@@ -13,8 +14,8 @@ const storage = new Storage({
 const bucket = storage.bucket('gs://fir-mvvm-237fb.appspot.com/');
 
 /**
- * Subir el archivo a Firebase Storage
- * file objeto que sera almacenado en Firebase Storage
+ * Sube el archivo a Firebase Storage y resuelve con su URL pública.
+ * Ver la documentación detallada en cloud_storage.js.
  */
 module.exports = (file, pathImage) => {
   return new Promise((resolve, reject) => {
@@ -37,7 +38,6 @@ module.exports = (file, pathImage) => {
         });
 
         blobStream.on('finish', () => {
-          // The public URL can be used to directly access the file via HTTP.
           const url = format(
             `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${fileUpload.name}?alt=media&token=${uuid}`,
           );

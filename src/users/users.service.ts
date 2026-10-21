@@ -7,21 +7,25 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Rol } from 'src/roles/entities/rol.entity';
 // import storage = require('../utils/cloud_storage');
 
+// Lógica de negocio de los usuarios (tabla 'users').
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
-  //Estamos usando conceptos de APIRest
+
+  // Crea y guarda un usuario. La contraseña se cifra en el hook @BeforeInsert.
   create(user: CreateUserDto) {
-    const newUser = this.usersRepository.create(user); //Aqui nos crea un nuevo usuario
-    return this.usersRepository.save(newUser); //Se lo enviamos a la BD
+    const newUser = this.usersRepository.create(user);
+    return this.usersRepository.save(newUser);
   }
 
+  // Devuelve todos los usuarios con sus roles. Incluye el hash de la contraseña.
   findAll() {
     return this.usersRepository.find({ relations: ['roles'] });
   }
 
+  // Actualiza solo los campos enviados. Lanza 404 si el usuario no existe.
   async update(id: number, user: UpdateUserDto) {
     const userFound = await this.usersRepository.findOneBy({ id: id });
 
@@ -31,11 +35,11 @@ export class UsersService {
 
     console.log('User:', user);
 
-    const updatedUser = Object.assign(userFound, user); //Actualiza al usuario
+    const updatedUser = Object.assign(userFound, user);
     return this.usersRepository.save(updatedUser);
   }
 
-  //Actualizar con imagen
+  // Método desactivado: sube la foto de perfil a Firebase y actualiza el usuario con su URL.
   // async updateWithImage(
   //   file: Express.Multer.File,
   //   id: number,

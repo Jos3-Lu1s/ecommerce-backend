@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 
+// Módulo de categorías: entidad, servicio, controlador y estrategia JWT para los endpoints protegidos.
 @Module({
   imports: [ TypeOrmModule.forFeature([Category]) ],
   providers: [CategoriesService, JwtStrategy],

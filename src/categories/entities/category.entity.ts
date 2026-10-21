@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+// Tabla 'categories': categorías a las que pertenecen los productos.
 @Entity({ name: 'categories' })
 export class Category {
   @PrimaryGeneratedColumn()
@@ -20,6 +21,7 @@ export class Category {
   @Column()
   description!: string;
 
+  // URL pública de la imagen en Firebase Storage. Puede ser NULL.
   @IsOptional()
   @Column({ nullable: true })
   image!: string;
@@ -30,6 +32,7 @@ export class Category {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updated_at!: Date;
 
+  // Productos que pertenecen a esta categoría.
   @OneToMany(() => Product, (product) => product.id)
   product!: Product;
 }

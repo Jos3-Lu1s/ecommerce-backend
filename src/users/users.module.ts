@@ -7,6 +7,7 @@ import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { Rol } from 'src/roles/entities/rol.entity';
 import { Order } from 'src/orders/entities/order.entity';
 
+// Módulo de usuarios: entidades relacionadas, servicio, controlador y estrategia JWT.
 @Module({
   imports: [ TypeOrmModule.forFeature([User, Rol, Order]) ],
   providers: [UsersService, JwtStrategy],

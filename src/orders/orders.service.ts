@@ -5,45 +5,46 @@ import { Order } from './entities/order.entity';
 import { OrderHasProducts } from './entities/order_has_products.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 
+// Lógica de negocio de las órdenes (tablas 'orders' y 'order_has_products').
 @Injectable()
 export class OrdersService {
   constructor(
-    // Inyección del repositorio de la entidad Order (tabla 'orders')
+    // Repositorio de la tabla 'orders'.
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
-    // Inyección del repositorio de la entidad OrderHasProducts (tabla intermedia 'order_has_products')
+    // Repositorio de la tabla intermedia 'order_has_products'.
     @InjectRepository(OrderHasProducts)
     private ordersHasProductsRepository: Repository<OrderHasProducts>,
   ) {}
 
-  // Método para crear una orden directamente (sin pasarela de pago como Mercado Pago)
+  // Crea una orden directamente, sin pasarela de pago.
   async create(order: CreateOrderDto) {
-    // 1. Preparamos la entidad de la orden con los datos principales (id_client, id_address)
+    // 1. Prepara la orden con id_client e id_address.
     const newOrder = this.ordersRepository.create(order);
 
-    // 2. Guardamos la orden en la base de datos para generar su ID único
+    // 2. Guarda la orden para obtener su ID.
     const savedOrder = await this.ordersRepository.save(newOrder);
 
-    // 3. Recorremos el listado de productos para registrarlos en la tabla intermedia 'order_has_products'
+    // 3. Registra cada producto en 'order_has_products'.
     for (const product of order.products) {
       const ohp = new OrderHasProducts();
-      ohp.id_order = savedOrder.id; // Asociamos el ID de la orden creada
+      ohp.id_order = savedOrder.id; // ID de la orden recién creada
       ohp.id_product = product.id; // ID del producto comprado
-      ohp.quantity = product.quantity; // Cantidad de unidades
+      ohp.quantity = product.quantity; // Unidades compradas
       await this.ordersHasProductsRepository.save(ohp);
     }
 
-    // 4. Retornamos la orden registrada
+    // 4. Devuelve la orden guardada.
     return savedOrder;
   }
 
-  // Obtener todas las órdenes con sus relaciones (usuario, dirección y productos)
+  // Devuelve todas las órdenes con su usuario, dirección y productos.
   findAll() {
     return this.ordersRepository.find({
       relations: ['user', 'address', 'orderHasProducts.product'],
     });
   }
 
-  // Obtener todas las órdenes de un cliente específico
+  // Devuelve las órdenes de un cliente con su usuario, dirección y productos.
   findByClient(idClient: number) {
     return this.ordersRepository.find({
       relations: ['user', 'address', 'orderHasProducts.product'],
@@ -51,7 +52,7 @@ export class OrdersService {
     });
   }
 
-  // Actualizar el estado de la orden a 'DESPACHADO'
+  // Cambia el estado de la orden a 'DESPACHADO'. Lanza 404 si no existe.
   async updateStatus(id: number) {
     const orderFound = await this.ordersRepository.findOneBy({ id: id });
     if (!orderFound) {

@@ -15,6 +15,9 @@ import { Order } from 'src/orders/entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderHasProducts } from 'src/orders/entities/order_has_products.entity';
 
+// Cliente de la API de Mercado Pago. Todos los métodos devuelven un Observable que Nest
+// resuelve antes de responder. Si Mercado Pago responde con error, se reenvía al cliente
+// su mismo cuerpo y código HTTP (500 si no hay respuesta).
 @Injectable()
 export class MercadoPagoService {
   constructor(
@@ -24,6 +27,7 @@ export class MercadoPagoService {
     private ordersHasProductsRepository: Repository<OrderHasProducts>,
   ) {}
 
+  // GET /identification_types: tipos de documento de identidad aceptados (CC, DNI, RFC, etc.).
   getIdentificationTypes(): Observable<AxiosResponse<IdentificationType[]>> {
     return this.httpService
       .get(MERCADO_PAGO_API + '/identification_types', {
@@ -37,6 +41,8 @@ export class MercadoPagoService {
       .pipe(map((resp) => resp.data));
   }
 
+  // GET /payment_methods/installments: opciones de cuotas para la tarjeta (identificada por su BIN,
+  // los primeros 6 dígitos) y el monto. Devuelve solo el primer resultado de la lista.
   getInstallments(
     firstSixDigits: number,
     amount: number,
@@ -55,6 +61,8 @@ export class MercadoPagoService {
       .pipe(map((resp: AxiosResponse<Installment>) => resp.data[0]));
   }
 
+  // POST /card_tokens: convierte los datos de la tarjeta en un token de un solo uso,
+  // que es lo que se envía después en createPayment. Usa la Public Key de prueba.
   createCardToken(cardTokenBody: CardTokenBody): Observable<CardTokenResponse> {
     return this.httpService
       .post(
@@ -71,13 +79,15 @@ export class MercadoPagoService {
       .pipe(map((resp: AxiosResponse<CardTokenResponse>) => resp.data));
   }
 
-  // Procesa el pago en Mercado Pago y registra la orden en MySQL
+  // Procesa el pago en Mercado Pago y registra la orden en MySQL.
+  // La orden se guarda ANTES de cobrar: si Mercado Pago rechaza el pago, la orden queda en la BD con estado 'PAGADO'.
   async createPayment(
     paymentBody: PaymentBody,
   ): Promise<Observable<PaymentResponse>> {
     console.log('--- Petición recibida en createPayment ---');
     console.log(JSON.stringify(paymentBody, null, 2));
 
+    // Valida que venga la orden con sus campos obligatorios; si no, responde 400.
     if (
       !paymentBody.order ||
       !paymentBody.order.id_client ||
@@ -105,6 +115,7 @@ export class MercadoPagoService {
         400,
       );
     }
+    // Mercado Pago exige installments como número e issuer_id como texto.
     paymentBody.installments = Number(paymentBody.installments);
     if (paymentBody.issuer_id !== undefined && paymentBody.issuer_id !== null) {
       paymentBody.issuer_id = String(paymentBody.issuer_id);

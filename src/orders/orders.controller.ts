@@ -21,7 +21,7 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   // POST http://localhost:3000/orders
-  // Permite que tanto usuarios CLIENT como ADMIN creen una orden directamente (sin Mercado Pago)
+  // Crea una orden directamente, sin cobro en Mercado Pago. Público: los guards están desactivados.
   // @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Post()
@@ -30,7 +30,7 @@ export class OrdersController {
   }
 
   // GET http://localhost:3000/orders
-  // Obtiene todas las órdenes del sistema (Acceso exclusivo para administradores)
+  // Obtiene todas las órdenes del sistema. Público: los guards (pensados para ADMIN) están desactivados.
   // @HasRoles(JwtRole.ADMIN)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get()
@@ -39,7 +39,7 @@ export class OrdersController {
   }
 
   // GET http://localhost:3000/orders/:id_client
-  // Obtiene las órdenes asociadas a un cliente por su ID (Clientes y Administradores)
+  // Obtiene las órdenes de un cliente por su ID. Requiere rol CLIENT o ADMIN.
   @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get(':id_client')
@@ -48,7 +48,7 @@ export class OrdersController {
   }
 
   // PUT http://localhost:3000/orders/:id
-  // Actualiza el estado de una orden a 'DESPACHADO' (Acceso exclusivo para administradores)
+  // Cambia el estado de una orden a 'DESPACHADO'. Solo ADMIN.
   @HasRoles(JwtRole.ADMIN)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Put(':id')

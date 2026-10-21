@@ -8,6 +8,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Address } from 'src/address/entities/address.entity';
 import { Product } from 'src/products/entities/product.entity';
 
+// Módulo de órdenes: registra la orden, su tabla intermedia y las entidades relacionadas.
 @Module({
   imports: [
     TypeOrmModule.forFeature([Order, OrderHasProducts, User, Address, Product]),

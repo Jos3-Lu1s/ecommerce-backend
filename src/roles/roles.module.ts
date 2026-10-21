@@ -6,6 +6,7 @@ import { Rol } from './entities/rol.entity';
 import { User } from 'src/users/entities/user.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 
+// Módulo de roles: entidades, servicio, controlador y estrategia JWT.
 @Module({
   imports: [TypeOrmModule.forFeature([Rol, User])],
   providers: [RolesService, JwtStrategy],

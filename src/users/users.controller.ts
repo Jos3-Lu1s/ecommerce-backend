@@ -22,35 +22,40 @@ import { JwtRolesGuard } from '../auth/jwt/jwt-roles.guard';
 import { HasRoles } from 'src/auth/jwt/has-roles';
 import { JwtRole } from 'src/auth/jwt/jwt-role';
 import { Multer } from 'multer';
+
+// Prefijo de ruta base: http://localhost:3000/users
+// Gestiona los usuarios. Convención REST: GET obtiene, POST crea, PUT/PATCH actualiza, DELETE borra.
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
-  //Uso de APIRest
-  // GET -> OBTENER
-  // POST -> CREAR
-  // PUT ' PATCH -> ACTUALIZAR
-  // DELETE ' => BORRAR
 
+  // GET http://localhost:3000/users
+  // Lista todos los usuarios con sus roles. Requiere token válido; al no tener @HasRoles, acepta cualquier rol.
   //  @HasRoles(JwtRole.CLIENT)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @UseGuards(JwtAuthGuard)
-  @Get() // http://localhost/users -> GET
+  @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Post() // http://localhost/users -> POST
+  // POST http://localhost:3000/users
+  // Crea un usuario sin asignarle roles. Público.
+  @Post()
   create(@Body() user: CreateUserDto) {
     return this.usersService.create(user);
   }
 
+  // PUT http://localhost:3000/users/:id
+  // Actualiza los datos de un usuario. Requiere token con rol CLIENT.
   @HasRoles(JwtRole.CLIENT)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
-  @Put(':id') // http://192.168.1.15:3000/users/:id -> PUT
+  @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto) {
     return this.usersService.update(id, user);
   }
 
+  // Endpoint desactivado: PUT /users/upload/:id para actualizar el usuario con foto de perfil (máx. 10 MB).
   // @HasRoles(JwtRole.CLIENT)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   // @Put('upload/:id')

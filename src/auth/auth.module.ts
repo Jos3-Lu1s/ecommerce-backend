@@ -9,12 +9,14 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { RolesService } from 'src/roles/roles.service';
 import { Rol } from 'src/roles/entities/rol.entity';
 
+// Módulo de autenticación: registro, login y emisión de tokens JWT.
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Rol]),
+    // Configura la firma de los tokens: clave secreta y expiración de 2 días.
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '2d' }, //tiempo de expiración del token
+      signOptions: { expiresIn: '2d' },
     }),
   ],
   providers: [AuthService, RolesService, JwtStrategy],

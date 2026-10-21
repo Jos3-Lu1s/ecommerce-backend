@@ -23,10 +23,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
+// Prefijo de ruta base: http://localhost:3000/categories
+// Gestiona las categorías de productos.
 @Controller('categories')
 export class CategoriesController {
   constructor(private CategoriesService: CategoriesService) {}
 
+  // GET http://localhost:3000/categories
+  // Lista todas las categorías. Público: los guards están desactivados.
   // @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get()
@@ -34,9 +38,12 @@ export class CategoriesController {
     return this.CategoriesService.findAll();
   }
 
+  // POST http://localhost:3000/categories (multipart/form-data)
+  // Crea una categoría. La imagen (campo 'file') es opcional: PNG/JPG/JPEG, máximo 10 MB.
+  // Público: los guards están desactivados.
   // @HasRoles(JwtRole.ADMIN)
   // @UseGuards(JwtAuthGuard, JwtRolesGuard)
-  @Post() // http:localhost:3000/categories -> POST
+  @Post()
   @UseInterceptors(FileInterceptor('file'))
   createWithImage(
     @UploadedFile(
@@ -45,7 +52,7 @@ export class CategoriesController {
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
           new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
         ],
-        fileIsRequired: false, // aqui la imagen es opcional
+        fileIsRequired: false,
       }),
     )
     file: Express.Multer.File,
@@ -54,6 +61,8 @@ export class CategoriesController {
     return this.CategoriesService.create(file, category);
   }
 
+  // PUT http://localhost:3000/categories/:id
+  // Actualiza los datos de una categoría sin cambiar su imagen. Solo ADMIN.
   @HasRoles(JwtRole.ADMIN)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Put(':id')
@@ -64,9 +73,12 @@ export class CategoriesController {
     return this.CategoriesService.update(id, category);
   }
 
+  // PUT http://localhost:3000/categories/upload/:id (multipart/form-data)
+  // Actualiza una categoría y reemplaza su imagen. La imagen (campo 'file') es obligatoria:
+  // PNG/JPG/JPEG, máximo 10 MB. Solo ADMIN.
   @HasRoles(JwtRole.ADMIN)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
-  @Put('upload/:id') // http:localhost:3000/categories -> PUT
+  @Put('upload/:id')
   @UseInterceptors(FileInterceptor('file'))
   updateWithImage(
     @UploadedFile(
@@ -84,6 +96,8 @@ export class CategoriesController {
     return this.CategoriesService.updateWithImage(file, id, category);
   }
 
+  // DELETE http://localhost:3000/categories/:id
+  // Elimina una categoría. Solo ADMIN.
   @HasRoles(JwtRole.ADMIN)
   @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Delete(':id')

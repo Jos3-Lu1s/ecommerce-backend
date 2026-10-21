@@ -1,6 +1,10 @@
 import { Cardholder, Identification } from './card_holder';
 
+// Respuesta de Mercado Pago al crear un pago (/payments).
+// Las interfaces se generaron a partir de una respuesta real; los campos tipados como null
+// llegaron vacíos en esa muestra y pueden traer valores en otros pagos.
 export interface PaymentResponse {
+  // ID del pago en Mercado Pago.
   id: number;
   date_created: Date;
   date_approved: Date;
@@ -13,7 +17,9 @@ export interface PaymentResponse {
   payment_method_id: string;
   payment_type_id: string;
   payment_method: PaymentMethod;
+  // Resultado del pago: 'approved', 'rejected', 'in_process', etc.
   status: string;
+  // Motivo del estado (ej. 'accredited', 'cc_rejected_insufficient_amount').
   status_detail: string;
   currency_id: string;
   description: null;
@@ -38,7 +44,9 @@ export interface PaymentResponse {
   additional_info: AdditionalInfo;
   order: Metadata;
   external_reference: null;
+  // Monto cobrado.
   transaction_amount: number;
+  // Monto neto tras comisiones.
   net_amount: number;
   taxes: Tax[];
   transaction_amount_refunded: number;
@@ -48,11 +56,13 @@ export interface PaymentResponse {
   deduction_schema: null;
   installments: number;
   transaction_details: TransactionDetails;
+  // Comisiones cobradas por Mercado Pago.
   fee_details: FeeDetail[];
   charges_details: any[];
   captured: boolean;
   binary_mode: boolean;
   call_for_authorize_id: null;
+  // Texto que aparece en el resumen de la tarjeta del comprador.
   statement_descriptor: string;
   card: Card;
   notification_url: null;
@@ -71,6 +81,7 @@ export interface AdditionalInfo {
   authentication_code: null;
 }
 
+// Datos no sensibles de la tarjeta usada.
 export interface Card {
   id: null;
   first_six_digits: string;
@@ -82,14 +93,18 @@ export interface Card {
   cardholder: Cardholder;
 }
 
+// Comisión aplicada al pago.
 export interface FeeDetail {
   type: string;
   amount: number;
+  // Quién paga la comisión (ej. 'collector').
   fee_payer: string;
 }
 
+// Objeto vacío en la respuesta de muestra.
 export interface Metadata {}
 
+// Comprador, según lo registra Mercado Pago.
 export interface Payer {
   first_name: null;
   last_name: null;
@@ -127,6 +142,7 @@ export interface Tax {
   type: string;
 }
 
+// Desglose de importes de la transacción.
 export interface TransactionDetails {
   payment_method_reference_id: null;
   acquirer_reference: null;

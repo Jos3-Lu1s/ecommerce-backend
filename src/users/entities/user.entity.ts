@@ -13,6 +13,7 @@ import { Address } from 'src/address/entities/address.entity';
 import { Order } from 'src/orders/entities/order.entity';
 import { Exclude } from 'class-transformer';
 
+// Tabla 'users': usuarios de la aplicación.
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
@@ -30,13 +31,16 @@ export class User {
   @Column({ unique: true })
   phone!: string;
 
+  // URL de la foto de perfil. Puede ser NULL.
   @Column({ nullable: true })
   image!: string;
 
+  // Hash bcrypt de la contraseña. Se devuelve en las consultas: AuthService lo elimina manualmente de sus respuestas.
   // @Column({ select: false })
   @Column()
   password!: string;
 
+  // Token del dispositivo para notificaciones push. Puede ser NULL.
   @Column({ nullable: true })
   notification_token!: string;
 
@@ -46,6 +50,7 @@ export class User {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updated_at!: Date;
 
+  // Relación muchos a muchos con Rol a través de la tabla intermedia 'user_has_roles' (id_user, id_rol).
   @JoinTable({
     name: 'user_has_roles',
     joinColumn: {
@@ -64,6 +69,8 @@ export class User {
   // @OneToMany(() => Order, (order) => order.id)
   // order!: Order;
 
+  // Cifra la contraseña antes de insertar el usuario. Las rondas de sal se leen de HASH_SALT (.env).
+  // Solo se ejecuta al insertar: una contraseña cambiada con update() no se cifra.
   @BeforeInsert()
   async hashPassword() {
     this.password = await hash(this.password, Number(process.env.HASH_SALT));

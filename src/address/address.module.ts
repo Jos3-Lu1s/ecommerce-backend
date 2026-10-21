@@ -7,6 +7,8 @@ import { User } from 'src/users/entities/user.entity';
 import { JwtStrategy } from '../auth/jwt/jwt.strategy';
 import { Order } from 'src/orders/entities/order.entity';
 
+// Módulo de direcciones: registra las entidades que usa, su servicio, su controlador
+// y la estrategia JWT necesaria para los endpoints protegidos.
 @Module({
   imports: [TypeOrmModule.forFeature([Address, User, Order])],
   providers: [AddressService, JwtStrategy],
