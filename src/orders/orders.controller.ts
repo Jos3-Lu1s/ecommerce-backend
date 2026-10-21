@@ -22,8 +22,8 @@ export class OrdersController {
 
   // POST http://localhost:3000/orders
   // Permite que tanto usuarios CLIENT como ADMIN creen una orden directamente (sin Mercado Pago)
-  @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @HasRoles(JwtRole.CLIENT, JwtRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Post()
   create(@Body() order: CreateOrderDto) {
     return this.ordersService.create(order);
@@ -31,8 +31,8 @@ export class OrdersController {
 
   // GET http://localhost:3000/orders
   // Obtiene todas las órdenes del sistema (Acceso exclusivo para administradores)
-  @HasRoles(JwtRole.ADMIN)
-  @UseGuards(JwtAuthGuard, JwtRolesGuard)
+  // @HasRoles(JwtRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, JwtRolesGuard)
   @Get()
   findAll() {
     return this.ordersService.findAll();

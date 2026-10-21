@@ -9,7 +9,6 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { Address } from 'src/address/entities/address.entity';
 import { OrderHasProducts } from './order_has_products.entity';
-import { Product } from 'src/products/entities/product.entity';
 
 @Entity('orders')
 export class Order {
@@ -42,8 +41,4 @@ export class Order {
   @OneToMany(() => OrderHasProducts, (ohp) => ohp.order)
   @JoinColumn({ referencedColumnName: 'id_order' })
   orderHasProducts!: OrderHasProducts[];
-
-  @OneToMany(() => Product, (product) => product.orderHasProducts)
-  @JoinColumn({ referencedColumnName: 'id_order' })
-  products!: Product[]
 }
